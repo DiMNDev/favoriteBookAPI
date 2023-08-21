@@ -23,14 +23,24 @@ const deleteBook = async (req, res) => {
   const bookForDeletion = {
     bookID: req.body.id,
   };
-  const deletedBook = await Book.findOneAndRemove({
-    _id: bookForDeletion.bookID,
-  });
-  if (!deletedBook) {
-    throw new Error("Deletion Unsuccessful");
+  const lookUpBook = await Book.findById(bookForDeletion.bookID);
+  console.log("createdBy:", lookUpBook.createdBy);
+  if (!lookUpBook) {
+    throw new Error(`Could not find book with id:${bookForDeletion.bookID}`);
+  } else {
+    if (lookUpBook.createdBy == req.user.userID) {
+      const deletedBook = await Book.findOneAndRemove({
+        _id: bookForDeletion.bookID,
+      });
+      if (!deletedBook) {
+        throw new Error("Deletion Unsuccessful");
+      }
+      console.log(`Deleted book ${deletedBook}`);
+      res.json(`Removed ${deletedBook.title}`);
+    } else {
+      throw new Error(`You can not delete someone elses favorite book`);
+    }
   }
-  console.log(`Deleted book ${deletedBook}`);
-  res.json(`Removed ${deletedBook.title}`);
 };
 
 const getAllUserBooks = async (req, res) => {

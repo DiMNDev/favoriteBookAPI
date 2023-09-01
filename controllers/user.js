@@ -1,5 +1,8 @@
 const User = require("../models/user");
 
+//Import Errors
+const { BadRequest, NotFound, AuthorizationError } = require("../errors");
+
 const register = async (req, res) => {
   const newUser = {
     username: req.body.username,
@@ -24,19 +27,22 @@ const login = async (req, res) => {
     password: req.body.password,
   };
   if (!loginInfo) {
-    throw new Error("Please provide credentials");
+    //Recieved incomplete request
+    throw new BadRequest("Please provide credentials");
   }
   const user = await User.findOne({ email: loginInfo.email });
   if (!user) {
-    throw new Error("Oopsie Daisy");
+    //User does not exist
+    throw new NotFound("Oopsie Daisy");
   }
   const correctPassword = await user.comparePassword(loginInfo.password);
   if (!correctPassword) {
-    throw new Error("Done did messed up sumn");
+    //Incorrect password
+    throw new AuthorizationError("Done did messed up sumn");
   }
   const token = user.createJWT();
   res.status(200).json({ user: { name: user.username }, token });
-  console.log("Login");
+  console.log(`Hello ${user.username}`);
 };
 
 module.exports = { register, login };

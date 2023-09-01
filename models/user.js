@@ -19,12 +19,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  savedFavorites: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Book", unique: true },
-  ],
-  createdFavorites: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "Book", unique: true },
-  ],
+  savedFavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book" }],
+  createdFavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book" }],
 });
 
 UserSchema.pre("save", async function () {

@@ -37,6 +37,7 @@ UserSchema.pre("save", async function () {
 UserSchema.methods.getID = function () {
   return this._id;
 };
+
 UserSchema.methods.getName = function () {
   return this.username;
 };
@@ -61,16 +62,16 @@ UserSchema.methods.saveBook = async function (bookId, created) {
   if (created) {
     if (unique) {
       this.createdFavorites.push(bookId);
+      await this.save();
       console.log(`Book ${bookId} created by user ${this._id}`);
-      this.save();
     } else {
       console.log(`Book ${bookId} already exists for user ${this._id}.`);
     }
   } else {
     if (unique) {
       this.savedFavorites.push(bookId);
+      await this.save();
       console.log(`Updated saved favorites for user ${this._id}`);
-      this.save();
     } else {
       console.log(`Book ${bookId} already saved for user ${this._id}.`);
     }
@@ -92,7 +93,7 @@ UserSchema.methods.removeBook = async function (bookId) {
 
 UserSchema.methods.toggleSaved = async function (bookId) {
   let response = "empty";
-  const unique = this.validateUniqueness(bookId, false);
+  const unique = await this.validateUniqueness(bookId, false);
   if (unique) {
     response = this.saveBook(bookId, false);
   } else {

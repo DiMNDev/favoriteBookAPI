@@ -5,10 +5,10 @@
     "description": "What's yours?",
     "version": "1.0.0"
   },
-  "host": "localhost:3000",
+  "host": "favoritebookapi.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/user/login": {
@@ -114,23 +114,6 @@
         }
       }
     },
-    "/user/books/allUser": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/user/books/allUserArray": {
       "get": {
         "description": "",
@@ -149,23 +132,6 @@
       }
     },
     "/user/books/allSavedArray": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/user/books/allSaved": {
       "get": {
         "description": "",
         "parameters": [

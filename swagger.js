@@ -5,8 +5,8 @@ const doc = {
     title: "Favorite Books",
     description: "What's yours?",
   },
-  host: "localhost:3000",
-  schemes: ["http"],
+  host: "favoritebookapi.onrender.com",
+  schemes: ["https"],
 };
 
 const outputFile = "./swagger_output.json";

@@ -7,7 +7,7 @@ const dbErrors = require("./middleware/dbErrors");
 const cors = require("cors");
 require("express-async-errors");
 app.use(express.json());
-app.use("/", cors({ origin: "http://127.0.0.1:5500" }), require("./routes"));
+app.use("/", cors(), require("./routes"));
 app.use(dbErrors);
 
 const start = async () => {

@@ -52,9 +52,7 @@ UserSchema.methods.createJWT = function () {
 };
 
 UserSchema.methods.saveBook = async function (bookId, created) {
-  console.log("SAVE:bookId:", bookId);
   let unique = await this.validateUniqueness(bookId, created);
-  console.log("unique:", unique);
   if (created) {
     if (unique) {
       this.createdFavorites.push(bookId);
@@ -76,7 +74,6 @@ UserSchema.methods.saveBook = async function (bookId, created) {
 };
 
 UserSchema.methods.removeBook = async function (bookId) {
-  console.log("REMOVE:bookId:", bookId);
   for (const [index, value] of this.savedFavorites.entries()) {
     if (JSON.stringify(bookId) == JSON.stringify(value)) {
       this.savedFavorites.splice(index, 1);
@@ -100,22 +97,23 @@ UserSchema.methods.toggleSaved = async function (bookId) {
 
 UserSchema.methods.validateUniqueness = function (id, created) {
   console.log("created:", created);
+
   if (created) {
-    for (const [index, value] of this.createdFavorites.entries()) {
-      if (JSON.stringify(id) == JSON.stringify(value)) {
-        console.log(`${id} == @ index ${index}`);
-        return false;
-      }
+    if (!this.createdFavorites.includes(id)) {
+      console.log("IS UNIQUE");
+      return true;
+    } else {
+      console.log("NOT UNIQUE");
+      return false;
     }
-    return true;
   } else {
-    for (const [index, value] of this.savedFavorites.entries()) {
-      if (JSON.stringify(id) == JSON.stringify(value)) {
-        console.log(`${id} == @ index ${index}`);
-        return false;
-      }
+    if (!this.savedFavorites.includes(id)) {
+      console.log("IS UNIQUE");
+      return true;
+    } else {
+      console.log("NOT UNIQUE");
+      return false;
     }
-    return true;
   }
 };
 

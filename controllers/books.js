@@ -22,19 +22,14 @@ const addBook = async (req, res) => {
     );
   }
   user.saveBook(book.id, true);
-  console.log(book);
-  console.log(`${req.user.name}`);
+  console.log(`${user.username} added the book ${newBook.title}`);
   res.json(book);
 };
 const deleteBook = async (req, res) => {
-  // provide id of book to delete
-  // if user deleting is the one that created
-  // delete book
   const bookForDeletion = {
     bookID: req.body.id,
   };
   const lookUpBook = await Book.findById(bookForDeletion.bookID);
-  // console.log("createdBy:", lookUpBook.createdBy);
   if (!lookUpBook) {
     throw new Error(`Could not find book with id:${bookForDeletion.bookID}`);
   } else {
@@ -45,7 +40,7 @@ const deleteBook = async (req, res) => {
       if (!deletedBook) {
         throw new Error("Deletion Unsuccessful");
       }
-      console.log(`Deleted book ${deletedBook}`);
+      console.log(`${req.user.name} deleted book ${deletedBook}`);
       res.json(`Removed ${deletedBook.title}`);
     } else {
       throw new Error(`You can not delete someone elses favorite book`);
@@ -67,9 +62,8 @@ const saveBook = async (req, res) => {
       `Bad Authentication while updating user ${req.user.userID}`
     );
   }
-  console.log(book._id);
   user.saveBook(book._id, false);
-  console.log(`${req.user.name}`);
+  console.log(`${user.username} saved ${book.title}`);
   res.json(book);
 };
 const removeBook = async (req, res) => {
@@ -92,7 +86,7 @@ const removeBook = async (req, res) => {
   //Check Array
   user.removeBook(book._id);
   //Remove if id is present
-  res.json(`Removed ${book._id} from saved favorties of user ${user._id}`);
+  res.json(`Removed ${book._id} from saved favorties of user ${user.username}`);
 };
 const getOneBook = async (req, res) => {
   const requestData = {
@@ -122,13 +116,7 @@ const toggleHeart = async (req, res) => {
   const responseMessage = await user.toggleSaved(book._id);
   res.json(responseMessage);
 };
-const getAllUserCreated = async (req, res) => {
-  const userCreated = await Book.find({ createdBy: req.user.userID });
-  if (!userCreated) {
-    throw new Error("Sumin done did messed up guy");
-  }
-  res.status(200).json({ userCreated, count: userCreated.length });
-};
+
 const getAllUserCreatedFromArray = async (req, res) => {
   const user = await User.findById(req.user.userID);
   if (!user) {
@@ -142,10 +130,7 @@ const getAllUserCreatedFromArray = async (req, res) => {
     })
     .forEach(async (id, index, idArray) => {
       const book = await getBookFromId(id);
-      // console.log("Array of Books", books);
       books.push(book);
-      // console.log("index", index);
-      // console.log("idLength:", idArray.length);
       counter++;
       if (counter === idArray.length) {
         checkOut(books);
@@ -154,7 +139,6 @@ const getAllUserCreatedFromArray = async (req, res) => {
   const checkOut = (books) => {
     try {
       if (books) {
-        // console.log("Books:", books);
         res.status(200).json({ books, count: books.length });
       }
     } catch (error) {
@@ -195,20 +179,14 @@ const getAllUserSavedFromArray = async (req, res) => {
 };
 const getBookFromId = async (bookId) => {
   const book = await Book.findOne({ _id: bookId });
-  // console.log("id:", bookId);
   if (!book) {
     throw new Error("Could not find book");
   }
   return book;
 };
-const getAllUserSaved = async (req, res) => {
-  const user = await User.findById(req.user.userID);
-  const favorites = user.savedFavorites;
-  res.status(200).json({ favorites, count: favorites.length });
-};
+
 const getAllBooks = async (req, res) => {
   const allBooks = await Book.find();
-  // console.log("All the books", allBooks);
   res.status(200).json({ allBooks, count: allBooks.length });
 };
 const addComment = async (req, res) => {
@@ -267,8 +245,6 @@ module.exports = {
   deleteBook,
   getOneBook,
   getAllBooks,
-  getAllUserCreated,
-  getAllUserSaved,
   getAllUserCreatedFromArray,
   getAllUserSavedFromArray,
   addComment,

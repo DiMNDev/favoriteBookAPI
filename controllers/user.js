@@ -18,7 +18,7 @@ const register = async (req, res) => {
   }
   const token = user.createJWT();
   console.log(`Welcome ${newUser.username}`);
-  res.json({ user: { username: user.username }, token });
+  res.json({ user: { name: user.username }, token });
 };
 
 const login = async (req, res) => {
